@@ -1,4 +1,5 @@
---checking what sub-category have higher than average shipping time
+
+-- Which sub-category have higher than average shipping time
 
 with cte as (select "Order ID"::text                            as order_id,
                     to_date("Order Date", 'dd.mm.yyyy')         as order_date,
@@ -8,16 +9,8 @@ with cte as (select "Order ID"::text                            as order_id,
                     datediff('days', order_date, shipping_date) as days_to_ship
              from schema."Test_sample")
 
-select category,
-       sub_category,
-       round(avg(days_to_ship) over (partition by category), 2)                     as avg_cat_ship_time,
-       round(avg(days_to_ship) over (partition by sub_category), 2)                 as avg_sub_cat_ship_time,
-       case when avg_sub_cat_ship_time > avg_cat_ship_time then true else false end as higher_than_avg
-from cte
 
-
-
--- top 10 customer with most profitable orders
+-- How are the 10 customers with most profitable orders
 
 with profits as (select distinct "Order ID"::text                           as order_id,
                                  "Customer Name"                            as customer_name,
@@ -31,4 +24,20 @@ from profits
 order by profit desc
 limit 10
 
+-- Quarter over Quarter and Year over Year sales overview
 
+select round(sum(replace("Profit", ',', '.')), 2)                 as sales,
+       date_trunc('quarter', to_date("Order Date", 'dd.mm.yyyy')) as order_quarter,
+       date_trunc('year', to_date("Order Date", 'dd.mm.yyyy'))    as order_year,
+       case
+           when lead(sales) over (order by order_quarter) > sales
+               then true
+           else false end                                         as has_grown_QoQ,
+       case
+           when lead(sales) over (order by order_year) > sales
+               then true
+           else false end                                         as has_grown_YoY,
+       round(sales - lag(sales) over (order by order_quarter), 2) as QoQ_difference
+from schema."Test_sample"
+group by 2, 3
+order by order_quarter
