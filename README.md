@@ -1,2 +1,4 @@
 # portfolio
-Massimo Capobianco Data Portfolio
+Massimo Capobianco 
+
+Data Analyst currently located in Berlin, Germany.
