@@ -1,3 +1,7 @@
+-- These simple queries are using data taken from tableau free resources available at https://public.tableau.com/app/resources/sample-data
+
+
+
 
 -- Which sub-category have higher than average shipping time
 
