@@ -14,7 +14,7 @@ with cte as (select "Order ID"::text                            as order_id,
              from schema."Test_sample")
 
 
--- How are the 10 customers with most profitable orders
+-- Which are the 10 customers with most profitable orders
 
 with profits as (select distinct "Order ID"::text                           as order_id,
                                  "Customer Name"                            as customer_name,
